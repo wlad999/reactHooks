@@ -12,10 +12,7 @@ const App = () => {
                     +
                 </button>
                 <button onClick={() => setVisible(false)}>hide</button>
-                {/*<ClassCounter value={value}/>*/}
-                {/*<HookCounter value={value}/>*/}
-                <Notification/>
-
+                <PlanetInfo id={value}/>
             </div>
         )
     } else {
@@ -24,53 +21,31 @@ const App = () => {
     }
 }
 
-class ClassCounter extends Component {
-    componentDidMount() {
-        console.log("class: mount")
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        console.log("class: update")
-    }
-
-    componentWillUnmount() {
-        console.log("class: unmount")
-    }
-
-    render() {
-        return <p>{this.props.value}</p>
-    }
-
-}
-
-const HookCounter = ({value}) => {
-
+const PlanetInfo = ({id}) => {
+    const [planet, setPlanet] = useState("noknown")
+    // const getPlanet = async (id) => {
+    //     const result = await fetch(`https://swapi.dev/api/planets/${id}/`).then(
+    //         res => res.json()).then(data => setPlanet(data.name))
+    // };
     useEffect(() => {
-        console.log("Update useEffect")
-    })
-    useEffect(() => {
-        console.log("mount useEffect")
-        return () => console.log("clear useEffect")
-    }, [])
-    return <p>{value}</p>
-
-}
-const Notification = () => {
-    const [value, setValue] = useState("HELLO!!!")
-
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-            setValue("UPS((((")
-        }, 1500)
+        let canceled = false
+        fetch(`https://swapi.dev/api/planets/${id}/`).then(
+            res => res.json()).then(data => !canceled && setPlanet(data.name))
         return () => {
-            clearInterval(timeout)
+            canceled = true
         }
-    }, [])
+        // getPlanet(id)
+        //---------------CORS POLICE!!!!!!!!!!!!!!!!!
+        // fetch('https://swapi.co/api/planets/3')
+        //     .then(res => res.json())
+        //     .then(data => console.log("NAME", data.name))
+        //----------------------------------------
 
-    return <div><p>{value}</p></div>
+    }, [id])
+    return (
+        <div>{id} - {planet ? planet : "not found"}</div>
+    )
 }
-
-
 ReactDOM.render(
     <React.StrictMode>
         <App/>
