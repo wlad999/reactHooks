@@ -20,8 +20,13 @@ const App = () => {
         </button>
     }
 }
-const usePlanetInfo = (id) => {
+
+const PlanetInfo = ({id}) => {
     const [planet, setPlanet] = useState("noknown")
+    // const getPlanet = async (id) => {
+    //     const result = await fetch(`https://swapi.dev/api/planets/${id}/`).then(
+    //         res => res.json()).then(data => setPlanet(data.name))
+    // };
     useEffect(() => {
         let canceled = false
         fetch(`https://swapi.dev/api/planets/${id}/`).then(
@@ -29,16 +34,16 @@ const usePlanetInfo = (id) => {
         return () => {
             canceled = true
         }
+        // getPlanet(id)
+        //---------------CORS POLICE!!!!!!!!!!!!!!!!!
+        // fetch('https://swapi.co/api/planets/3')
+        //     .then(res => res.json())
+        //     .then(data => console.log("NAME", data.name))
+        //----------------------------------------
+
     }, [id])
-    return planet
-
-}
-
-const PlanetInfo = ({id}) => {
-    const name = usePlanetInfo(id)
-
     return (
-        <div>{id} - {name}</div>
+        <div>{id} - {planet ? planet : "not found"}</div>
     )
 }
 ReactDOM.render(
