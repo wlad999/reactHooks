@@ -63,9 +63,7 @@ const Notification = () => {
             setValue("UPS((((")
         }, 1500)
         return () => {
-            console.log("TIME before", timeout)
             clearInterval(timeout)
-            console.log("TIME after", timeout)
         }
     }, [])
 
