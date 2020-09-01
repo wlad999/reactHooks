@@ -13,8 +13,7 @@ const App = () => {
                 </button>
                 <button onClick={() => setVisible(false)}>hide</button>
                 {/*<ClassCounter value={value}/>*/}
-                {/*<HookCounter value={value}/>*/}
-                <Notification/>
+                <HookCounter value={value}/>
 
             </div>
         )
@@ -44,32 +43,20 @@ class ClassCounter extends Component {
 }
 
 const HookCounter = ({value}) => {
-
+    // useEffect(() => {
+    //     console.log("mount useEffect")
+    // }, [])
     useEffect(() => {
         console.log("Update useEffect")
     })
+    // useEffect(() => () => console.log('clear'), [])
+
     useEffect(() => {
         console.log("mount useEffect")
         return () => console.log("clear useEffect")
     }, [])
     return <p>{value}</p>
 
-}
-const Notification = () => {
-    const [value, setValue] = useState("HELLO!!!")
-
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-            setValue("UPS((((")
-        }, 1500)
-        return () => {
-            console.log("TIME before", timeout)
-            clearInterval(timeout)
-            console.log("TIME after", timeout)
-        }
-    }, [])
-
-    return <div><p>{value}</p></div>
 }
 
 
