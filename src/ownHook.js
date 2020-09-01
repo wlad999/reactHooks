@@ -1,8 +1,8 @@
-import React, {useState, useEffect, useCallback, useMemo} from 'react';
+import React, {useState, Component, useEffect} from 'react';
 import ReactDOM from 'react-dom';
 
 const App = () => {
-    const [value, setValue] = useState(1)
+    const [value, setValue] = useState(0)
     const [visible, setVisible] = useState(true)
 
     if (visible) {
@@ -25,51 +25,32 @@ const getPlanet = (id) => {
         res => res.json()).then(data => data)
 }
 const useRequest = (request) => {
-    const initialState = useMemo(() => ({
-        data: null,
-        loading: true,
-        error: null
-    }), [])
-    const [dataState, setDataState] = useState(initialState)
+    const [dataState, setDataState] = useState("noknown")
     useEffect(() => {
-        setDataState(initialState)
         let canceled = false
         request().then(data => !canceled
             &&
-            setDataState({
-                data,
-                loading: false,
-                error: null
-            })
-        ).catch(error => !canceled && setDataState({
-            data: null,
-            loading: false,
-            error
-        }))
+            setDataState(data)
+        )
         return () => {
             canceled = true
         }
-    }, [request])
+    },)
     return dataState
 
 }
 
 const usePlanetInfo = (id) => {
-    const request = useCallback(() => getPlanet(id), [id])
+    const request = () => getPlanet(id)
     return useRequest(request)
+
 }
 
 const PlanetInfo = ({id}) => {
-    const {data, loading, error} = usePlanetInfo(id)
-    if (error) {
-        return <div>Something wrong</div>
-    }
-    if (loading) {
-        return <div>LOADING...</div>
-    }
+    const data = usePlanetInfo(id)
 
     return (
-        <div>{id} - {data.name}</div>
+        <div>{id} - {data && data.name}</div>
     )
 }
 ReactDOM.render(
