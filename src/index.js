@@ -1,47 +1,61 @@
-import React, {useState} from 'react';
+import React, {useState, Component, useEffect} from 'react';
 import ReactDOM from 'react-dom';
 
 const App = () => {
-    return <div><HookSwitcher/></div>
-}
-const HookSwitcher = () => {
-    const [color, setColor] = useState('gray')
-    const [fontSize, setFontSize] = useState(14)
+    const [value, setValue] = useState(0)
+    const [visible, setVisible] = useState(true)
 
-    return (
-        <div style={{padding: '10px', backgroundColor: color, fontSize: `${fontSize}px`}}>
-            HELLO WORLD
-            <button onClick={() => {
-                setColor('gray')
-            }}>
-                DARK
-            </button>
-            <button onClick={() => {
-                setColor('white')
-            }}>
-                LIGHT
-            </button>
-            <button onClick={() => {
-                setFontSize((s) => s + 2)
-            }}>+
-            </button>
-        </div>
-    )
+    if (visible) {
+        return (
+            <div>
+                <button onClick={() => setValue((v) => v + 1)}>
+                    +
+                </button>
+                <button onClick={() => setVisible(false)}>hide</button>
+                <ClassCounter value={value}/>
+                <HookCounter value={value}/>
+
+            </div>
+        )
+    } else {
+        return <button onClick={() => setVisible(true)}>show
+        </button>
+    }
 }
-const Person = () => {
-    const [person, setPerson] = useState({
-        firstName: 'Bob',
-        lastName: 'Smith'
-    })
-    setPerson((person) => {
-        return {...person, firstName: 'Mike'}
-    })
+
+class ClassCounter extends Component {
+    componentDidMount() {
+        console.log("class: mount")
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        console.log("class: update")
+    }
+
+    componentWillUnmount() {
+        console.log("class: unmount")
+    }
+
+    render() {
+        return <p>{this.props.value}</p>
+    }
+
+}
+
+const HookCounter = ({value}) => {
+    useEffect(() => {
+        console.log("useEffect")
+        return () => console.log('clear')
+    }, [value])
+    return <p>{value}</p>
+
 }
 
 
 ReactDOM.render(
     <React.StrictMode>
         <App/>
-    </React.StrictMode>,
+    </React.StrictMode>
+    ,
     document.getElementById('root')
 );
